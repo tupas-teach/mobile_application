@@ -1,6 +1,20 @@
+/**
+ * services/supabase.ts
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Supabase client + all DB helper functions for FlexZone.
+ *
+ * ✅ FIX: Import path changed from './config' → '../constants/config'
+ *         because this file lives at:   FlexZone/services/supabase.ts
+ *         and config lives at:          FlexZone/constants/config.ts
+ *
+ *         The original './config' would look for a config.ts inside services/
+ *         which does not exist — hence the "Cannot find module" error.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from '../constants/config'; // ✅ FIX: was './config'
 import type { Booking, User } from '../types';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
