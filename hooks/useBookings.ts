@@ -3,7 +3,6 @@ import { useBookingStore } from '../store/bookingStore';
 import type { Booking } from '../types';
 
 /**
- * useBookings — loads real bookings from Supabase for a given user.
  * Replaces the old stub that returned an empty array after a timeout.
  */
 export function useBookings(userId: string) {

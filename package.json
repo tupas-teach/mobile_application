@@ -19,7 +19,6 @@
     "@supabase/phoenix": "^0.4.4",
     "@supabase/server": "^1.1.0",
     "@supabase/ssr": "^0.12.0",
-    "@supabase/supabase-js": "^2.108.2",
     "expo": "~54.0.34",
     "expo-constants": "~18.0.13",
     "expo-font": "~14.0.11",

@@ -1,17 +1,17 @@
-// lib/config.ts
-// ─────────────────────────────────────────────────────────────────────────────
-// Single re-export hub — import from here OR from constants/config directly.
-// No keys hardcoded here; everything lives in constants/config.ts + .env
-//
-// ✅ FIX: Added API_URL to the re-export list.
-//         It was missing before, so any file importing API_URL from lib/config
-//         would get a TypeScript "has no exported member 'API_URL'" error.
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * lib/config.ts
+ */
 
-export {
-  ANTHROPIC_API_KEY, API_URL, GOOGLE_MAPS_KEY,
-  PAYMONGO_KEY,
-  SUPABASE_ANON_KEY,
-  SUPABASE_URL
-} from '../constants/config';
+// ── Laravel Backend ───────────────────────────────────────────────────────────
+export const API_BASE: string =
+  process.env.EXPO_PUBLIC_API_BASE ?? 'http://192.168.1.6/flexzone-api/public/api';
 
+export const API_URL = API_BASE;
+
+// ── Anthropic AI Coach ────────────────────────────────────────────────────────
+export const ANTHROPIC_API_KEY: string | undefined =
+  process.env.EXPO_PUBLIC_ANTHROPIC_KEY;
+
+// ── PayMongo ──────────────────────────────────────────────────────────────────
+export const PAYMONGO_PUBLIC_KEY: string | undefined =
+  process.env.EXPO_PUBLIC_PAYMONGO_KEY;

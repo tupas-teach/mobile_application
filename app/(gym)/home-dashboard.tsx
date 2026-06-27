@@ -26,7 +26,7 @@ const ALL_SEARCHABLE = [
   { type:'screen', label:'Book a Court',   sub:'Reserve basketball, volleyball…',  emoji:'📋', path:'/(court)/book',         tag:'court' },
   { type:'screen', label:'Court Events',   sub:'Birthday, corporate, weddings',    emoji:'🎉', path:'/(court)/events',       tag:'court' },
   { type:'screen', label:'Court Shop',     sub:'Drinks, snacks & gear',            emoji:'🛒', path:'/(court)/marketplace',  tag:'court' },
-  { type:'screen', label:'Court Chat',     sub:'Message the admin team',           emoji:'💬', path:'/(court)/chat',         tag:'court' },
+  { type:'screen', label:'Court Chat',     sub:'Message the admin team',           emoji:'💬', path:'/(court)/court-chat',         tag:'court' },
   // Shared
   { type:'screen', label:'My Bookings',    sub:'Upcoming & past bookings',         emoji:'📆', path:'/(shared)/my-bookings', tag:'account' },
   { type:'screen', label:'Transactions',   sub:'Payment history',                  emoji:'💳', path:'/(shared)/transactions', tag:'account' },

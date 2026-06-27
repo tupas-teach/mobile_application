@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { createTransaction, fetchTransactions } from '../lib/supabase';
 import type { CartItem, PaymentTransaction, Product } from '../types';
 
 // ─── ALL PRODUCTS — single source of truth ────────────────────────────────────
@@ -51,9 +50,7 @@ interface CartState {
   updateQty:      (id: string, qty: number) => void;
   clearCart:      () => void;
 
-  /** Persist transaction to Supabase, then update local state */
   addTransaction: (tx: PaymentTransaction) => Promise<void>;
-  /** Load transactions for a user from Supabase */
   loadTransactions: (userId: string) => Promise<void>;
 
   cartTotal: () => number;

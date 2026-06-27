@@ -51,6 +51,7 @@ export default function GymLayout() {
       <Tabs.Screen name="coach-applications-admin" options={{ href: null }} />
       <Tabs.Screen name="home-dashboard"          options={{ href: null }} />
       <Tabs.Screen name="coach-profile"           options={{ href: null }} />
+      <Tabs.Screen name="coache-profile"          options={{ href: null }} />
     </Tabs>
   );
 }

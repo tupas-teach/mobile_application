@@ -1,4 +1,4 @@
-import { ANTHROPIC_API_KEY } from '../lib/config';
+import { ANTHROPIC_API_KEY } from '@/lib/config';
 
 export interface Message {
   id: string;
