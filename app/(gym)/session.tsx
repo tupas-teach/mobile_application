@@ -1,6 +1,7 @@
 import { Badge, EmptyState, IntensityBar } from '@/components/UI';
 import { COLORS, RADIUS, SHADOW, SPACING } from '@/constants/theme';
 import { useGymStore } from '@/store/gymStore';
+import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
   Alert,
@@ -12,21 +13,24 @@ import {
   View,
 } from 'react-native';
 
-// ── Fitness-gym-only filters ─────────────────────────────────────────────────
-const FILTERS = ['All', 'HIIT', 'Yoga', 'Boxing', 'Strength', 'Cardio'] as const;
+// ── Muscle-group filters ──────────────────────────────────────────────────────
+const FILTERS = ['All', 'Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio'] as const;
 type FilterType = typeof FILTERS[number];
 
-// ── Per-type fitness metadata ─────────────────────────────────────────────────
+// ── Per-muscle-group metadata ─────────────────────────────────────────────────
 const TYPE_META: Record<string, { emoji: string; calories: string; focus: string }> = {
-  HIIT:     { emoji: '🔥', calories: '400–600 kcal', focus: 'Fat burn & endurance'   },
-  Yoga:     { emoji: '🧘', calories: '150–300 kcal', focus: 'Flexibility & recovery'  },
-  Boxing:   { emoji: '🥊', calories: '500–700 kcal', focus: 'Cardio & upper body'     },
-  Strength: { emoji: '🏋️', calories: '300–500 kcal', focus: 'Muscle & power'          },
-  Cardio:   { emoji: '🏃', calories: '350–550 kcal', focus: 'Heart health & stamina'  },
+  Chest:     { emoji: '🏋️', calories: '250–400 kcal', focus: 'Pecs, front delts & triceps'  },
+  Back:      { emoji: '🧗', calories: '280–420 kcal', focus: 'Lats, traps & rear delts'      },
+  Shoulders: { emoji: '🔝', calories: '200–350 kcal', focus: 'Delts, rotator cuff & traps'   },
+  Arms:      { emoji: '💪', calories: '150–280 kcal', focus: 'Biceps, triceps & forearms'    },
+  Legs:      { emoji: '🦵', calories: '350–600 kcal', focus: 'Quads, hamstrings & glutes'    },
+  Core:      { emoji: '🌀', calories: '180–300 kcal', focus: 'Abs, obliques & lower back'    },
+  Cardio:    { emoji: '🏃', calories: '400–700 kcal', focus: 'Heart health & fat burn'       },
 };
 
 export default function SessionScreen() {
   const { sessions, bookedSessions, bookSession, cancelBooking } = useGymStore();
+  const router = useRouter();
   const [query,  setQuery]  = useState('');
   const [filter, setFilter] = useState<FilterType>('All');
 
@@ -81,7 +85,7 @@ export default function SessionScreen() {
           <Text style={s.searchIcon}>🔍</Text>
           <TextInput
             style={s.searchInput}
-            placeholder="Search exercise, coach or type..."
+            placeholder="Search muscle group, coach or session..."
             placeholderTextColor={COLORS.textMuted}
             value={query}
             onChangeText={setQuery}
@@ -124,7 +128,7 @@ export default function SessionScreen() {
           <EmptyState
             emoji="🏋️"
             title="No sessions found"
-            subtitle="Try a different filter or search"
+            subtitle="Try a different muscle group or search"
           />
         ) : (
           filtered.map((session) => {
@@ -215,6 +219,22 @@ export default function SessionScreen() {
                     </Text>
                   </TouchableOpacity>
 
+                  {/* ── Track Workout button (booked sessions only) ───────── */}
+                  {isBooked && (
+                    <TouchableOpacity
+                      style={s.trackBtn}
+                      onPress={() =>
+                        router.push({
+                          pathname: '/workout-tracker' as any,
+                          params:   { sessionName: session.name },
+                               })
+                      }
+                      activeOpacity={0.85}
+                    >
+                      <Text style={s.trackBtnText}>📊  Track Workout</Text>
+                    </TouchableOpacity>
+                  )}
+
                 </View>
               </View>
             );
@@ -292,4 +312,8 @@ const s = StyleSheet.create({
   bookBtnFull:       { backgroundColor: COLORS.border },
   bookBtnText:       { color: '#fff', fontWeight: '700', fontSize: 14 },
   bookBtnTextBooked: { color: COLORS.primaryDark },
+
+  // Track workout button
+  trackBtn:          { marginTop: 8, borderRadius: RADIUS.md, paddingVertical: 9, alignItems: 'center', borderWidth: 1.5, borderColor: COLORS.primary },
+  trackBtnText:      { color: COLORS.primary, fontWeight: '700', fontSize: 13 },
 });

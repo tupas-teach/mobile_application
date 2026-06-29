@@ -1,29 +1,9 @@
-/**
- * store/authStore.ts  ← REPLACE YOUR CURRENT FILE WITH THIS
- *
- * WHAT THIS FIXES:
- * - Removes all mock data (MOCK_USER, setTimeout fakes)
- * - login() → real POST /api/auth/login to Laravel
- * - register() → real POST /api/auth/register (saves to flexzone DB)
- * - restoreSession() → validates token via GET /api/auth/me
- * - logout() → calls POST /api/auth/logout
- * - Token persisted in AsyncStorage so session survives app restarts
- *
- * ⚠️  API_BASE: set this to your PC's LAN IP if testing on a real phone.
- *     Find it by running: ipconfig  (look for IPv4 Address e.g. 192.168.1.5)
- */
-
+import { API_BASE } from '@/lib/config';
 import type { MembershipTier, User } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
 export type { MembershipTier, User };
-
-// ─── SET YOUR API URL HERE ────────────────────────────────────────────────────
-// Run `ipconfig` in PowerShell and use your IPv4 Address below.
-// Example: http://192.168.1.5/flexzone-api/public/api
-const API_BASE = 'http://192.168.1.6/flexzone-api/public/api'; // ← CHANGE THIS
-// ─────────────────────────────────────────────────────────────────────────────
 
 interface AuthState {
   user:            User | null;

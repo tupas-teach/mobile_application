@@ -66,7 +66,7 @@ export default function LoginScreen() {
           <View style={styles.logoContainer}>
             <Text style={styles.logo}>FLEX<Text style={styles.logoAccent}>ZONE</Text></Text>
           </View>
-          <Text style={styles.tagline}>SmartGym & Court Booking</Text>
+          <Text style={styles.tagline}> Fitness SmartGym & Court Booking</Text>
           <Text style={styles.welcome}>Welcome back! 👋</Text>
           <Text style={styles.subtitle}>Sign in to your account</Text>
         </View>

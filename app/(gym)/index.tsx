@@ -29,7 +29,9 @@ const SEARCH_INDEX = [
   { label:'Profile',        sub:'Edit your account',       emoji:'👤', path:'/(shared)/profile'      },
   { label:'Settings',       sub:'Notifications, security', emoji:'⚙️', path:'/(shared)/settings'     },
   { label:'Help & Support', sub:'FAQs & contact us',       emoji:'🆘', path:'/(shared)/support'      },
-  {label: 'Coach Profile',  sub: 'View coach details',     emoji: '🧑‍🏫',path: '/(gym)/coach-profile',},
+  // ✅ FIX: was '/(gym)/coach-profile' — that screen no longer exists there.
+  // coaches.tsx moved it to '/(shared)/coach-profile'.
+  {label: 'Coach Profile',  sub: 'View coach details',     emoji: '🧑‍🏫',path: '/(shared)/coach-profile',},
  
 ];
 
@@ -176,7 +178,8 @@ export default function DashboardScreen() {
             {emoji:'👥',label:'Coaches',   path:'/(gym)/coaches'     },
             {emoji:'🛍️',label:'Shop',      path:'/(gym)/marketplace' },
             {emoji:'🤖',label:'AI Coach',  path:'/(gym)/ai-coach'    },
-            {emoji:'🧑‍🏫',label:'Coach Profile',path:'/(gym)/coach-profile'},
+            // ✅ FIX: was '/(gym)/coach-profile' — moved to '/(shared)/coach-profile'
+            {emoji:'🧑‍🏫',label:'Coach Profile',path:'/(shared)/coach-profile'},
           ].map((item) => (
             <TouchableOpacity key={item.label} style={s.quickCard} onPress={() => router.push(item.path as never)} activeOpacity={0.8}>
               <Text style={s.quickEmoji}>{item.emoji}</Text>

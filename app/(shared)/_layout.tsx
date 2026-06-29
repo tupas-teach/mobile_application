@@ -12,9 +12,10 @@ export default function SharedLayout() {
       <Stack.Screen name="settings" />
       <Stack.Screen name="support" />
       <Stack.Screen name="payment" />
-      <Stack.Screen name="notification" />
+      <Stack.Screen name="notifications" />  {/* ← FIXED: was "notification" */}
       <Stack.Screen name="receipt/[id]" />
       <Stack.Screen name="refund" />
+      <Stack.Screen name="coach-profile" />
     </Stack>
   );
 }

@@ -4,119 +4,110 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BookingController extends Controller
 {
-    // ── Get my bookings ───────────────────────────────────────────────────────
-    public function index(): JsonResponse
+    // ── GET /api/bookings ─────────────────────────────────────────────────────
+    public function index()
     {
-        $bookings = Booking::where('user_id', JWTAuth::user()->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $bookings = Booking::where('user_id', auth()->id())
+                           ->orderBy('created_at', 'desc')
+                           ->get();
 
         return response()->json($bookings);
     }
 
-    // ── Create booking ────────────────────────────────────────────────────────
-    public function store(Request $request): JsonResponse
+    // ── POST /api/bookings ────────────────────────────────────────────────────
+    public function store(Request $request)
     {
-        $v = Validator::make($request->all(), [
-            'court_id'       => 'required|string',
-            'court_name'     => 'required|string',
-            'date'           => 'required|date',
-            'time_slots'     => 'required|array|min:1',
-            'duration'       => 'required|numeric',
-            'category'       => 'required|string',
-            'total_amount'   => 'required|numeric',
-            'payment_method' => 'nullable|in:gcash,maya,credit_card,cash',
-            'notes'          => 'nullable|string',
-            'guest_count'    => 'nullable|integer',
-            'event_type'     => 'nullable|string',
+        $data = $request->validate([
+            'court_id'   => 'required|exists:courts,id',
+            'date'       => 'required|date',
+            'time_slots' => 'required|array|min:1',
+            'total'      => 'required|numeric|min:0',
+            'notes'      => 'nullable|string',
         ]);
 
-        if ($v->fails()) {
-            return response()->json(['errors' => $v->errors()], 422);
-        }
-
-        // ── Check slot conflicts ──────────────────────────────────────────────
-        $conflicting = Booking::where('court_id', $request->court_id)
-            ->where('date', $request->date)
-            ->whereNotIn('status', ['cancelled'])
-            ->get()
-            ->filter(function ($b) use ($request) {
-                return count(array_intersect($b->time_slots, $request->time_slots)) > 0;
-            });
-
-        if ($conflicting->count() > 0) {
-            return response()->json([
-                'message' => 'One or more selected time slots are already booked.',
-            ], 409);
-        }
-
         $booking = Booking::create([
-            'user_id'        => JWTAuth::user()->id,
-            'court_id'       => $request->court_id,
-            'court_name'     => $request->court_name,
-            'date'           => $request->date,
-            'time_slots'     => $request->time_slots,
-            'duration'       => $request->duration,
-            'category'       => $request->category,
-            'total_amount'   => $request->total_amount,
-            'status'         => 'confirmed',
-            'payment_status' => 'unpaid',
-            'payment_method' => $request->payment_method,
-            'notes'          => $request->notes,
-            'guest_count'    => $request->guest_count,
-            'event_type'     => $request->event_type,
+            'user_id'    => auth()->id(),
+            'court_id'   => $data['court_id'],
+            'date'       => $data['date'],
+            'time_slots' => json_encode($data['time_slots']),
+            'total'      => $data['total'],
+            'notes'      => $data['notes'] ?? null,
+            'status'     => 'confirmed',
         ]);
 
         return response()->json($booking, 201);
     }
 
-    // ── Get booked slots for a court + date ───────────────────────────────────
-    public function slots(Request $request): JsonResponse
+    // ── GET /api/bookings/slots ───────────────────────────────────────────────
+    public function slots(Request $request)
     {
-        $v = Validator::make($request->all(), [
-            'court_id' => 'required|string',
+        $request->validate([
+            'court_id' => 'required|exists:courts,id',
             'date'     => 'required|date',
         ]);
 
-        if ($v->fails()) {
-            return response()->json(['errors' => $v->errors()], 422);
-        }
+        $takenSlots = Booking::where('court_id', $request->court_id)
+                             ->where('date', $request->date)
+                             ->whereIn('status', ['confirmed', 'pending'])
+                             ->pluck('time_slots')
+                             ->flatMap(fn($s) => json_decode($s, true))
+                             ->unique()
+                             ->values();
 
-        $bookedSlots = Booking::where('court_id', $request->court_id)
-            ->where('date', $request->date)
-            ->whereNotIn('status', ['cancelled'])
-            ->pluck('time_slots')
-            ->flatten()
-            ->unique()
-            ->values();
-
-        return response()->json(['booked_slots' => $bookedSlots]);
+        return response()->json(['taken_slots' => $takenSlots]);
     }
 
-    // ── Cancel booking ────────────────────────────────────────────────────────
-    public function cancel(int $id): JsonResponse
+    // ── PUT /api/bookings/{id}/cancel ─────────────────────────────────────────
+    public function cancel($id)
     {
         $booking = Booking::where('id', $id)
-            ->where('user_id', JWTAuth::user()->id)
-            ->first();
-
-        if (!$booking) {
-            return response()->json(['message' => 'Booking not found.'], 404);
-        }
-
-        if ($booking->status === 'cancelled') {
-            return response()->json(['message' => 'Booking is already cancelled.'], 400);
-        }
+                          ->where('user_id', auth()->id())
+                          ->firstOrFail();
 
         $booking->update(['status' => 'cancelled']);
 
-        return response()->json(['message' => 'Booking cancelled.', 'booking' => $booking]);
+        return response()->json(['message' => 'Booking cancelled successfully.']);
+    }
+
+    // ── POST /api/bookings/{id}/refund  ← NEW ────────────────────────────────
+    public function refund(Request $request, $id)
+    {
+        $booking = Booking::where('id', $id)
+                          ->where('user_id', auth()->id())
+                          ->firstOrFail();
+
+        // Only confirmed bookings can be refunded
+        if ($booking->status !== 'confirmed') {
+            return response()->json([
+                'message' => 'Only confirmed bookings can be refunded.',
+            ], 422);
+        }
+
+        // Calculate refund percentage based on days until booking
+        $daysUntil  = now()->diffInDays($booking->date, false);
+        $refundPct  = $daysUntil >= 7 ? 100 : ($daysUntil >= 3 ? 50 : 0);
+        $refundAmt  = round($booking->total * $refundPct / 100, 2);
+
+        $request->validate([
+            'reason'  => 'required|string|max:255',
+            'details' => 'nullable|string|max:1000',
+        ]);
+
+        // Mark booking as cancelled
+        $booking->update(['status' => 'cancelled']);
+
+        // TODO: trigger PayMongo refund here when payment integration is live
+        // PayMongoService::refund($booking->payment_id, $refundAmt);
+
+        return response()->json([
+            'message'       => 'Refund request submitted successfully.',
+            'refund_pct'    => $refundPct,
+            'refund_amount' => $refundAmt,
+            'reference'     => 'REF-' . strtoupper(base_convert(time(), 10, 36)),
+        ]);
     }
 }

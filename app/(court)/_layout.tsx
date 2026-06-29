@@ -1,14 +1,3 @@
-/**
- * app/(court)/_layout.tsx
- *
- * FIX: Tab name was "chat" but the actual file is "court-chat.tsx".
- * Expo Router uses the filename as the route name, so the tab must be
- * name="court-chat" — otherwise the Chat tab renders a blank/404 screen.
- *
- * Also fixed: all router.push calls in index.tsx, events.tsx use
- * '/(court)/chat' — those are updated to '/(court)/court-chat' too.
- */
-
 import { COLORS } from '@/constants/theme';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -26,16 +15,21 @@ function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focu
 export default function CourtLayout() {
   return (
     <Tabs screenOptions={{
-      headerShown:    false,
-      tabBarStyle:    t.bar,
+      headerShown: false,
+      tabBarStyle: t.bar,
       tabBarShowLabel: false,
     }}>
-      <Tabs.Screen name="index"        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏟️" label="Courts"  focused={focused} /> }} />
-      <Tabs.Screen name="book"         options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📋" label="Book"    focused={focused} /> }} />
-      <Tabs.Screen name="events"       options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🎉" label="Events"  focused={focused} /> }} />
-      <Tabs.Screen name="marketplace"  options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🛍️" label="Shop"   focused={focused} /> }} />
-      {/* ✅ FIX: was name="chat" — must match filename court-chat.tsx */}
-      <Tabs.Screen name="court-chat"   options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="💬" label="Chat"    focused={focused} /> }} />
+      {/* ── Visible tabs ── */}
+      <Tabs.Screen name="index"       options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🏟️" label="Courts"  focused={focused} /> }} />
+      <Tabs.Screen name="book"        options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="📋" label="Book"    focused={focused} /> }} />
+      <Tabs.Screen name="events"      options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🎉" label="Events"  focused={focused} /> }} />
+      <Tabs.Screen name="marketplace" options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="🛍️" label="Shop"   focused={focused} /> }} />
+      <Tabs.Screen name="court-chat"  options={{ tabBarIcon: ({ focused }) => <TabIcon emoji="💬" label="Chat"    focused={focused} /> }} />
+
+      {/* ── Hidden screens — reachable via router.push, NOT shown as tabs ── */}
+      <Tabs.Screen name="my-bookings"  options={{ href: null }} />
+      <Tabs.Screen name="refund"       options={{ href: null }} />
+      <Tabs.Screen name="notification" options={{ href: null }} />
     </Tabs>
   );
 }

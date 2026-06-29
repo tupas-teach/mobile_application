@@ -4,7 +4,7 @@
 
 // ── Laravel Backend ───────────────────────────────────────────────────────────
 export const API_BASE: string =
-  process.env.EXPO_PUBLIC_API_BASE ?? 'http://192.168.1.6/flexzone-api/public/api';
+process.env.EXPO_PUBLIC_API_BASE ?? 'http://192.168.1.6/flexzone-api/public/api'
 
 export const API_URL = API_BASE;
 

@@ -1,5 +1,5 @@
 import { COLORS, RADIUS, SHADOW, SPACING } from '@/constants/theme';
-import { mockPayment } from '@/lib/paymongo';
+import { API_BASE } from '@/lib/config';
 import { useAuthStore } from '@/store/authStore';
 import { useBookingStore } from '@/store/bookingStore';
 import { useCartStore } from '@/store/cartStore';
@@ -31,8 +31,8 @@ export default function PaymentScreen() {
     total?:string; slots?:string; date?:string; packageName?:string;
   }>();
 
-  const { user }                              = useAuthStore();
-  const { cartItems, cartTotal, clearCart, addTransaction } = useCartStore();
+  const { user, token }                                                         = useAuthStore();
+  const { cartItems, cartTotal, clearCart, addTransaction }                     = useCartStore();
   const { selectedCourt, selectedDate, selectedSlots, addBooking, clearSelection } = useBookingStore();
   const [method,  setMethod]  = useState<PayLocal|null>(null);
   const [loading, setLoading] = useState(false);
@@ -62,12 +62,31 @@ export default function PaymentScreen() {
     if (!method) { Alert.alert('Select payment','Please choose a payment method.'); return; }
     setLoading(true);
     try {
-      const result = await mockPayment(amount, method as PaymentMethod);
-      if (result.success) {
+      const response = await fetch(`${API_BASE}/payments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          amount,
+          method,
+          type: params.type,
+          description: title,
+          user_id: user?.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        const reference = result.reference ?? `REF-${Date.now()}`;
+
         const tx: PaymentTransaction = {
-          id: result.reference, userId: user?.id ?? '1', amount,
+          id: reference, userId: user?.id ?? '1', amount,
           method: method as PaymentMethod, status:'success',
-          reference: result.reference, createdAt: new Date().toISOString(),
+          reference, createdAt: new Date().toISOString(),
           description: title,
           items: params.type === 'cart' ? cartItems : undefined,
         };
@@ -76,7 +95,7 @@ export default function PaymentScreen() {
         // Create court booking record
         if (params.type === 'court' && selectedCourt) {
           const booking: Booking = {
-            id: result.reference, userId: user?.id ?? '1',
+            id: reference, userId: user?.id ?? '1',
             courtId: selectedCourt.id, courtName: selectedCourt.name,
             date: selectedDate,
             timeSlots: selectedSlots.map((id) => id),
@@ -92,11 +111,13 @@ export default function PaymentScreen() {
 
         router.replace({
           pathname: '/(shared)/receipt/[id]' as never,
-          params: { id: result.reference, type: params.type, amount: amount.toString() },
+          params: { id: reference, type: params.type, amount: amount.toString() },
         });
+      } else {
+        Alert.alert('Payment failed', result.message ?? 'Please try again or choose a different method.');
       }
     } catch {
-      Alert.alert('Payment failed','Please try again or choose a different method.');
+      Alert.alert('Payment failed','Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -118,7 +139,7 @@ export default function PaymentScreen() {
           <Text style={s.summaryEmoji}>🔐</Text>
           <Text style={s.summaryTitle}>{title}</Text>
           <Text style={s.summaryAmount}>₱{amount.toLocaleString()}</Text>
-          <Text style={s.summaryNote}>Secure payment powered by PayMongo</Text>
+          <Text style={s.summaryNote}>Secure payment · FlexZone</Text>
         </View>
 
         {/* Cart items */}
@@ -193,7 +214,7 @@ export default function PaymentScreen() {
           }
         </TouchableOpacity>
 
-        <Text style={s.secureNote}>🔒 256-bit SSL encryption · Secured by PayMongo</Text>
+        <Text style={s.secureNote}>🔒 256-bit SSL encryption · Secured by FlexZone</Text>
         <View style={{ height:40 }} />
       </ScrollView>
     </View>

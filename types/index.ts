@@ -8,7 +8,7 @@ export type MembershipTier     = 'basic' | 'premium' | 'vip';
 export type BookingStatus      = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 export type PaymentStatus      = 'pending' | 'paid' | 'unpaid' | 'refunded' | 'failed' | 'success';
 export type PaymentMethod      = 'gcash' | 'maya' | 'credit_card' | 'cash';
-export type ApplicationStatus  = 'pending' | 'approved' | 'rejected';   // ← ADDED
+export type ApplicationStatus  = 'pending' | 'approved' | 'rejected';
 export type SportCategory      = 'Basketball' | 'Volleyball' | 'Badminton' | 'Pickleball' | 'TableTennis';
 export type EventCategory      =
   | 'Birthday Party'
@@ -17,6 +17,18 @@ export type EventCategory      =
   | 'Corporate Event'
   | 'Wedding Reception'
   | 'Other Event';
+
+// ─── Muscle Group ─────────────────────────────────────────────────────────────
+// Replaces the old 'HIIT' | 'Yoga' | 'Boxing' | 'Strength' | 'Cardio' union
+
+export type MuscleGroup =
+  | 'Chest'
+  | 'Back'
+  | 'Shoulders'
+  | 'Arms'
+  | 'Legs'
+  | 'Core'
+  | 'Cardio';
 
 // ─── User / Auth ─────────────────────────────────────────────────────────────
 
@@ -49,7 +61,7 @@ export interface Coach {
   sessionRate?: number;
 }
 
-// ─── Coach Application ───────────────────────────────────────────────────────  ← ADDED
+// ─── Coach Application ────────────────────────────────────────────────────────
 
 export interface CoachApplication {
   id:             string;
@@ -74,7 +86,7 @@ export interface CoachApplication {
 export interface GymSession {
   id:          string;
   name:        string;
-  type:        'HIIT' | 'Yoga' | 'Boxing' | 'Strength' | 'Cardio';
+  type:        MuscleGroup;  // ← FIXED: was 'HIIT' | 'Yoga' | 'Boxing' | 'Strength' | 'Cardio'
   coach:       string;
   coachId?:    string;
   time:        string;

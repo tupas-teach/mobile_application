@@ -30,7 +30,8 @@ function CoachModal({ coach, visible, onClose }: { coach: Coach | null; visible:
 
   const handleViewProfile = () => {
     onClose();
-    router.push({ pathname: '/(gym)/coach-profile' as never, params: { coachId: coach.id } });
+    // ── UPDATED: moved from /(gym)/coach-profile → /(shared)/coach-profile ──
+    router.push({ pathname: '/(shared)/coach-profile' as never, params: { coachId: coach.id } });
   };
 
   return (
@@ -127,7 +128,8 @@ export default function CoachesScreen() {
               <Text style={styles.coachBio} numberOfLines={2}>{coach.bio}</Text>
 
               <View style={styles.cardFooter}>
-                <TouchableOpacity onPress={() => router.push({ pathname: '/(gym)/coach-profile' as never, params: { coachId: coach.id } })}>
+                {/* ── UPDATED: moved from /(gym)/coach-profile → /(shared)/coach-profile ── */}
+                <TouchableOpacity onPress={() => router.push({ pathname: '/(shared)/coach-profile' as never, params: { coachId: coach.id } })}>
                   <Text style={styles.viewProfile}>View profile →</Text>
                 </TouchableOpacity>
                 <View style={styles.actions}>
