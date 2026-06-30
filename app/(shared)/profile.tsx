@@ -51,9 +51,14 @@ export default function ProfileScreen() {
       {/* Header */}
       <View style={s.header}>
         <Text style={s.screenTitle}>Profile</Text>
-        <TouchableOpacity onPress={() => router.push('/(shared)/notifications' as never)}>
-          <Text style={{ fontSize: 22 }}>🔔</Text>
-        </TouchableOpacity>
+        <View style={s.headerActions}>
+          <TouchableOpacity onPress={() => router.push('/(gym)/home-dashboard' as never)} style={s.headerIconBtn}>
+            <Text style={{ fontSize: 20 }}>🏠</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(shared)/notifications' as never)} style={s.headerIconBtn}>
+            <Text style={{ fontSize: 22 }}>🔔</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Overview card */}
@@ -118,6 +123,8 @@ const s = StyleSheet.create({
   container:       { flex: 1, backgroundColor: COLORS.background },
   content:         { padding: SPACING.lg },
   header:          { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 54, marginBottom: SPACING.xl },
+  headerActions:   { flexDirection: 'row', alignItems: 'center', gap: SPACING.md },
+  headerIconBtn:   { padding: 2 },
   screenTitle:     { fontSize: 26, fontWeight: '800', color: COLORS.text },
   overviewCard:    { backgroundColor: COLORS.card, borderRadius: RADIUS.xl, padding: SPACING.xl, alignItems: 'center', marginBottom: SPACING.xl, ...SHADOW.sm, borderWidth: 0.5, borderColor: COLORS.border },
   avatarCircle:    { width: 80, height: 80, borderRadius: 40, backgroundColor: COLORS.primaryLight, alignItems: 'center', justifyContent: 'center', marginBottom: SPACING.md, borderWidth: 3, borderColor: COLORS.primary },

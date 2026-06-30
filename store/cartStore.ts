@@ -9,8 +9,38 @@ async function getAuthHeader(): Promise<Record<string, string>> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+/**
+ * NOTE: This is a RESTORED/PLACEHOLDER product list.
+ * Your original ALL_PRODUCTS data was lost (replaced with an empty
+ * array + comment) in a previous file edit. I rebuilt this matching
+ * your real `Product` type from types.ts exactly:
+ * { id, name, category, price, image, rating?, reviews?, inStock?,
+ *   description?, forGym?, forCourt? }
+ *
+ * Replace with your real catalog once you confirm the screen renders.
+ */
 export const ALL_PRODUCTS: Product[] = [
-  // ... keep your existing ALL_PRODUCTS array exactly as-is
+  // ---------------- Court Gear ----------------
+  { id: 'p001', name: 'Basketball (Official Size 7)', category: 'Court Gear', price: 850, image: 'https://placehold.co/300x300?text=Basketball', rating: 4.6, reviews: 32, inStock: true, description: 'Official size indoor/outdoor basketball.', forGym: false, forCourt: true },
+  { id: 'p002', name: 'Volleyball', category: 'Court Gear', price: 700, image: 'https://placehold.co/300x300?text=Volleyball', rating: 4.5, reviews: 21, inStock: true, description: 'Match-grade volleyball.', forGym: false, forCourt: true },
+  { id: 'p003', name: 'Badminton Racket', category: 'Court Gear', price: 1200, image: 'https://placehold.co/300x300?text=Badminton+Racket', rating: 4.4, reviews: 14, inStock: true, description: 'Lightweight aluminum racket.', forGym: false, forCourt: true },
+  { id: 'p004', name: 'Pickleball Paddle', category: 'Court Gear', price: 1500, image: 'https://placehold.co/300x300?text=Pickleball+Paddle', rating: 4.7, reviews: 18, inStock: true, description: 'Composite face pickleball paddle.', forGym: false, forCourt: true },
+  { id: 'p005', name: 'Table Tennis Paddle Set', category: 'Court Gear', price: 600, image: 'https://placehold.co/300x300?text=Table+Tennis+Set', rating: 4.3, reviews: 9, inStock: true, description: 'Set of 2 paddles with 3 balls.', forGym: false, forCourt: true },
+
+  // ---------------- Gym Gear ----------------
+  { id: 'p006', name: 'Resistance Bands Set', category: 'Court Gear', price: 450, image: 'https://placehold.co/300x300?text=Resistance+Bands', rating: 4.5, reviews: 27, inStock: true, description: 'Set of 5 resistance bands, varying tension.', forGym: true, forCourt: false },
+  { id: 'p007', name: 'Gym Gloves', category: 'Court Gear', price: 350, image: 'https://placehold.co/300x300?text=Gym+Gloves', rating: 4.2, reviews: 19, inStock: true, description: 'Padded weightlifting gloves.', forGym: true, forCourt: false },
+  { id: 'p008', name: 'Yoga Mat', category: 'Court Gear', price: 550, image: 'https://placehold.co/300x300?text=Yoga+Mat', rating: 4.6, reviews: 33, inStock: true, description: 'Non-slip 6mm yoga/exercise mat.', forGym: true, forCourt: false },
+
+  // ---------------- Beverages ----------------
+  { id: 'p009', name: 'Bottled Water (500ml)', category: 'Beverages', price: 25, image: 'https://placehold.co/300x300?text=Water', rating: 4.8, reviews: 50, inStock: true, description: 'Purified drinking water.', forGym: true, forCourt: true },
+  { id: 'p010', name: 'Sports Drink (Electrolyte)', category: 'Beverages', price: 45, image: 'https://placehold.co/300x300?text=Sports+Drink', rating: 4.5, reviews: 38, inStock: true, description: 'Electrolyte replacement drink.', forGym: true, forCourt: true },
+  { id: 'p011', name: 'Protein Shake', category: 'Beverages', price: 120, image: 'https://placehold.co/300x300?text=Protein+Shake', rating: 4.4, reviews: 22, inStock: true, description: 'Ready-to-drink whey protein shake.', forGym: true, forCourt: false },
+
+  // ---------------- Accessories ----------------
+  { id: 'p012', name: 'Sweat Towel', category: 'Accessories', price: 150, image: 'https://placehold.co/300x300?text=Towel', rating: 4.6, reviews: 24, inStock: true, description: 'Quick-dry microfiber sports towel.', forGym: true, forCourt: true },
+  { id: 'p013', name: 'Headband', category: 'Accessories', price: 100, image: 'https://placehold.co/300x300?text=Headband', rating: 4.3, reviews: 16, inStock: true, description: 'Moisture-wicking sports headband.', forGym: true, forCourt: true },
+  { id: 'p014', name: 'Shaker Bottle', category: 'Accessories', price: 180, image: 'https://placehold.co/300x300?text=Shaker+Bottle', rating: 4.5, reviews: 20, inStock: true, description: '700ml protein shaker bottle.', forGym: true, forCourt: false },
 ];
 
 export const gymProducts   = ALL_PRODUCTS.filter((p) => p.forGym);

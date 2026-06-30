@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\CourtController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PaymentController; // ← NEW
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -35,14 +36,21 @@ Route::middleware('jwt.auth')->group(function () {
         Route::post('/',            [BookingController::class, 'store']);
         Route::get('/slots',        [BookingController::class, 'slots']);
         Route::put('/{id}/cancel',  [BookingController::class, 'cancel']);
-        Route::post('/{id}/refund', [BookingController::class, 'refund']); // ← NEW
+        Route::post('/{id}/refund', [BookingController::class, 'refund']);
     });
 
     // Transactions
     Route::get('transactions',  [TransactionController::class, 'index']);
     Route::post('transactions', [TransactionController::class, 'store']);
 
-    // Notifications ← NEW
+    // Payments ← NEW — fixes "route api/payments could not be found"
+    Route::prefix('payments')->group(function () {
+        Route::get('/',      [PaymentController::class, 'index']);
+        Route::post('/',     [PaymentController::class, 'store']);
+        Route::get('/{id}',  [PaymentController::class, 'show']);
+    });
+
+    // Notifications
     Route::prefix('notifications')->group(function () {
         Route::get('/',            [NotificationController::class, 'index']);
         Route::put('/{id}/read',   [NotificationController::class, 'markRead']);

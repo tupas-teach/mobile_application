@@ -91,9 +91,14 @@ export default function CourtDashboardScreen() {
             <Text style={s.title}>FlexZone Courts 🏟️</Text>
             <Text style={s.sub}>Sports Complex · Consolacion, Cebu</Text>
           </View>
-          <TouchableOpacity onPress={() => router.push('/(shared)/notifications' as never)}>
-            <Text style={{fontSize:22}}>🔔</Text>
-          </TouchableOpacity>
+          <View style={s.headerActions}>
+            <TouchableOpacity onPress={() => router.push('/(shared)/notifications' as never)} style={s.bellBtn}>
+              <Text style={{fontSize:22}}>🔔</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(shared)/profile' as never)}>
+              <View style={s.avatarBtn}><Text style={s.avatarText}>{user?.name?.charAt(0) ?? 'U'}</Text></View>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Map card */}
@@ -213,6 +218,10 @@ const s = StyleSheet.create({
   dropArrow:    { fontSize:18, color:COLORS.textMuted },
   content:      { padding:SPACING.lg },
   header:       { flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start', paddingTop:16, marginBottom:SPACING.lg },
+  headerActions:{ flexDirection:'row', alignItems:'center', gap:SPACING.md },
+  bellBtn:      { paddingTop:2 },
+  avatarBtn:    { width:40, height:40, borderRadius:20, backgroundColor:COLORS.primaryLight, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.primary },
+  avatarText:   { fontSize:16, fontWeight:'800', color:COLORS.primaryDark },
   title:        { fontSize:24, fontWeight:'700', color:COLORS.text },
   sub:          { fontSize:13, color:COLORS.textSecondary, marginTop:2 },
   mapCard:      { backgroundColor:COLORS.card, borderRadius:RADIUS.xl, marginBottom:SPACING.xl, overflow:'hidden', ...SHADOW.sm, borderWidth:0.5, borderColor:COLORS.border },

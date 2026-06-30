@@ -1,9 +1,10 @@
-import { ALL_PRODUCTS, ProductType, useCartStore } from '@/store/cartStore';
+import { ALL_PRODUCTS, useCartStore } from '@/store/cartStore';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/UI';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import type { Product as ProductType } from '../../types';
 
 const STYLES_EXTRA = { errorLight: '#FEE2E2' };
 
@@ -76,8 +77,8 @@ export default function CourtMarketplaceScreen() {
               <Text style={styles.productName}>{product.name}</Text>
               <Text style={styles.productDesc} numberOfLines={2}>{product.description}</Text>
               <View style={styles.ratingRow}>
-                <Text style={styles.stars}>{'★'.repeat(Math.round(product.rating))}</Text>
-                <Text style={styles.ratingText}>{product.rating} ({product.reviews})</Text>
+               <Text style={styles.stars}>{'★'.repeat(Math.round(product.rating ?? 0))}</Text>
+               <Text style={styles.ratingText}>{product.rating ?? 0} ({product.reviews ?? 0})</Text>
               </View>
               <View style={styles.productBottom}>
                 <Text style={styles.price}>₱{product.price.toLocaleString()}</Text>
