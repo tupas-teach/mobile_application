@@ -1,10 +1,14 @@
 import { API_BASE } from '@/lib/config';
 import { create } from 'zustand';
 import type { CartItem, PaymentTransaction, Product } from '../types';
+import { useAuthStore } from './authStore'; // ✅ FIX: static import instead of dynamic import().
+// The dynamic `await import('./authStore')` was triggering an async Metro
+// chunk load on every call, which could fail with
+// "LoadBundleFromServerRequestError: Could not load bundle" if the dev
+// server connection hiccuped. A static import is bundled up front and
+// avoids that runtime network dependency entirely.
 
-async function getAuthHeader(): Promise<Record<string, string>> {
-  // Pull JWT from authStore without a hook (outside React)
-  const { useAuthStore } = await import('./authStore');
+function getAuthHeader(): Record<string, string> {
   const token = useAuthStore.getState().token;
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
@@ -91,7 +95,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     // Optimistic update
     set((s) => ({ transactions: [tx, ...s.transactions] }));
     try {
-      const headers = await getAuthHeader();
+      const headers = getAuthHeader(); // ✅ FIX: no longer async
       await fetch(`${API_BASE}/transactions`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', ...headers },
@@ -114,7 +118,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   loadTransactions: async (userId) => {
     set({ isLoading: true });
     try {
-      const headers = await getAuthHeader();
+      const headers = getAuthHeader(); // ✅ FIX: no longer async
       const res  = await fetch(`${API_BASE}/transactions?user_id=${userId}`, { headers });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();

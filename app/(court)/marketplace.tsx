@@ -1,7 +1,7 @@
 import { ALL_PRODUCTS, useCartStore } from '@/store/cartStore';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/UI';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
 import type { Product as ProductType } from '../../types';
@@ -73,7 +73,13 @@ export default function CourtMarketplaceScreen() {
         <View style={styles.grid}>
           {filtered.map((product: ProductType) => (
             <View key={product.id} style={styles.productCard}>
-              <Text style={styles.productEmoji}>{product.image}</Text>
+              {/* ✅ FIX: product.image is a URL string, not an emoji — render it as
+                  an actual <Image>, not as raw <Text>. */}
+              <Image
+                source={{ uri: product.image }}
+                style={styles.productImage}
+                resizeMode="cover"
+              />
               <Text style={styles.productName}>{product.name}</Text>
               <Text style={styles.productDesc} numberOfLines={2}>{product.description}</Text>
               <View style={styles.ratingRow}>
@@ -135,7 +141,7 @@ const styles = StyleSheet.create({
   content:         { padding: SPACING.lg },
   grid:            { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   productCard:     { width: '48%', backgroundColor: '#1A1A2E', borderRadius: RADIUS.lg, padding: SPACING.md, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.08)', position: 'relative' },
-  productEmoji:    { fontSize: 36, marginBottom: SPACING.sm },
+  productImage:    { width: '100%', height: 90, borderRadius: RADIUS.md, marginBottom: SPACING.sm, backgroundColor: '#0F0F1E' }, // ✅ FIX: replaces old productEmoji text style
   productName:     { fontSize: 13, fontWeight: '700', color: '#fff', marginBottom: 2 },
   productDesc:     { fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 15, marginBottom: SPACING.sm },
   ratingRow:       { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: SPACING.sm },

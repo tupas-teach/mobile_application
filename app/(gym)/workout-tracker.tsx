@@ -4,8 +4,8 @@ import { useWorkoutStore } from '@/store/workoutStore';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert, KeyboardAvoidingView, Platform, ScrollView,
-    StyleSheet, Text, TextInput, TouchableOpacity, View
+  Alert, KeyboardAvoidingView, Platform, ScrollView,
+  StyleSheet, Text, TextInput, TouchableOpacity, View
 } from 'react-native';
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio'] as const;
@@ -26,6 +26,9 @@ export default function WorkoutTrackerScreen() {
     addExercise, removeExercise, updateNotes,
     addSet, removeSet, updateSet, toggleSetDone,
   } = useWorkoutStore();
+
+  // Reactive selector so this component re-renders when history changes
+  const history = useWorkoutStore((s) => s.history);
 
   const [workoutName, setWorkoutName]   = useState('');
   const [pickingGroup, setPickingGroup] = useState<string | null>(null);
@@ -84,10 +87,10 @@ export default function WorkoutTrackerScreen() {
             <Text style={s.startBtnText}>▶  Start Workout</Text>
           </TouchableOpacity>
 
-          {useWorkoutStore.getState().history.length > 0 && (
+          {history.length > 0 && (
             <>
               <SectionHeader title="Recent Workouts" />
-              {useWorkoutStore.getState().history.slice(0, 5).map((w) => (
+              {history.slice(0, 5).map((w) => (
                 <Card key={w.id} style={s.historyCard}>
                   <Text style={s.historyName}>{w.name}</Text>
                   <Text style={s.historyMeta}>

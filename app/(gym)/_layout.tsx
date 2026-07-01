@@ -2,7 +2,6 @@ import { COLORS } from '@/constants/theme';
 import { useCartStore } from '@/store/cartStore';
 import { useCoachChatStore } from '@/store/coachChatStore';
 import { Tabs } from 'expo-router';
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focused: boolean }) {
@@ -52,6 +51,7 @@ export default function GymLayout() {
       <Tabs.Screen name="home-dashboard"          options={{ href: null }} />
       <Tabs.Screen name="coach-profile"           options={{ href: null }} />
       <Tabs.Screen name="coache-profile"          options={{ href: null }} />
+      <Tabs.Screen name="workout-tracker"         options={{ href: null }} />
     </Tabs>
   );
 }
